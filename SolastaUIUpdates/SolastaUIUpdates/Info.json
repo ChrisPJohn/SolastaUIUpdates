@@ -1,0 +1,11 @@
+{
+	"Id": "SolastaUIUpdates",
+	"DisplayName": "SolastaUIUpdates",
+	"Author": "ChrisJohnDigital",
+	"Version": "0.0.1",
+	"ManagerVersion": "0.23.4",
+	"AssemblyName": "SolastaUIUpdates.dll",
+	"EntryMethod": "SolastaUIUpdates.Main.Load",
+	"Repository": "https://raw.githubusercontent.com/ChrisPJohn/SolastaUIUpdates/main/SolastaUIUpdates/Repository.json",
+	"HomePage": "https://www.nexusmods.com/solastacrownofthemagister/mods/95"
+}

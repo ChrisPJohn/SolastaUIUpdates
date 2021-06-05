@@ -1,0 +1,10 @@
+{
+	"Releases":
+	[
+		{
+			"Id": "SolastaUIUpdates",
+			"Version": "0.0.1",
+			"DownloadUrl": "https://github.com/ChrisPJohn/SolastaUIUpdates/releases/download/V0.0.1/SolastaUIUpdates.zip"
+		}
+	]
+}
