@@ -24,16 +24,8 @@ namespace SolastaUIUpdates.Patches
                     {
                         thirdRow = GameObject.Instantiate(powersTable);
                     }
-                    thirdRow.gameObject.SetActive(true);
-                    thirdRow.DetachChildren();
-                    thirdRow.SetParent(powersTable.parent.transform, true);
-                    thirdRow.transform.position = new Vector3(powersTable.transform.position.x, powersTable.transform.position.y + 200, powersTable.transform.position.z);
                     int toStayCount = powersTable.childCount * 2 / 3;
-                    for (int i = powersTable.childCount - 1; i > toStayCount; i--)
-                    {
-                        powersTable.GetChild(i).SetParent(thirdRow, false);
-                    }
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(thirdRow);
+                    MovePowersToRow(powersTable, thirdRow, toStayCount, 200);
                 }
                 if (powerBoxes.Count > 7)
                 {
@@ -41,21 +33,29 @@ namespace SolastaUIUpdates.Patches
                     {
                         secondRow = GameObject.Instantiate(powersTable);
                     }
-                    secondRow.gameObject.SetActive(true);
-                    secondRow.DetachChildren();
-                    secondRow.SetParent(powersTable.parent.transform, true);
-                    secondRow.transform.position = new Vector3(powersTable.transform.position.x, powersTable.transform.position.y + 80, powersTable.transform.position.z);
                     int toStayCount = powersTable.childCount / 2;
-                    for (int i = powersTable.childCount - 1; i > toStayCount; i--)
-                    {
-                        powersTable.GetChild(i).SetParent(secondRow, false);
-                    }
-
-                    float height = __instance.transform.parent.GetComponent<RectTransform>().rect.height;
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(powersTable);
-                    __instance.RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, powersTable.rect.width);
-                    LayoutRebuilder.ForceRebuildLayoutImmediate(secondRow);
+                    MovePowersToRow(powersTable, secondRow, toStayCount, 80);
                 }
+                float height = __instance.transform.parent.GetComponent<RectTransform>().rect.height;
+                LayoutRebuilder.ForceRebuildLayoutImmediate(powersTable);
+                __instance.RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, powersTable.rect.width);
+            }
+
+            private static void MovePowersToRow(RectTransform powersTable, RectTransform newRow, int toStayCount, int yOffset)
+            {
+                newRow.gameObject.SetActive(true);
+                newRow.DetachChildren();
+                newRow.SetParent(powersTable.parent.transform, true);
+                newRow.localScale = powersTable.localScale;
+                newRow.transform.position = new Vector3(powersTable.transform.position.x, powersTable.transform.position.y + yOffset, powersTable.transform.position.z);
+                for (int i = powersTable.childCount - 1; i > toStayCount; i--)
+                {
+                    Transform child = powersTable.GetChild(i);
+                    child.SetParent(newRow, false);
+                    child.localScale = powersTable.GetChild(0).localScale;
+
+                }
+                LayoutRebuilder.ForceRebuildLayoutImmediate(newRow);
             }
         }
 
