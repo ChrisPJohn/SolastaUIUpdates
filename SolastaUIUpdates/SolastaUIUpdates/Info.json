@@ -2,7 +2,7 @@
 	"Id": "SolastaUIUpdates",
 	"DisplayName": "SolastaUIUpdates",
 	"Author": "ChrisJohnDigital",
-	"Version": "0.0.1",
+	"Version": "0.0.4",
 	"ManagerVersion": "0.23.4",
 	"AssemblyName": "SolastaUIUpdates.dll",
 	"EntryMethod": "SolastaUIUpdates.Main.Load",

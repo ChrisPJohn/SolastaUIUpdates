@@ -68,8 +68,6 @@ namespace SolastaUIUpdates
 
                 LoadTranslations();
 
-                modEntry.OnGUI = OnGUI;
-
                 var harmony = new Harmony(modEntry.Info.Id);
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
             }
@@ -83,11 +81,6 @@ namespace SolastaUIUpdates
         }
 
         internal static void ModEntryPoint()
-        {
-
-        }
-
-        static void OnGUI(UnityModManager.ModEntry modEntry)
         {
 
         }
