@@ -11,7 +11,6 @@ namespace SolastaUIUpdates.Patches
     {
 		private static readonly int MAX_LEVELS_PER_LINE = 5;
 		private static List<RectTransform> spellLineTables = new List<RectTransform>();
-		private static GameObject SpellLineHolder;
 
 		[HarmonyPatch(typeof(SpellSelectionPanel), "Bind")]
 		internal static class SpellSelectionPanel_SecondLine
@@ -31,15 +30,15 @@ namespace SolastaUIUpdates.Patches
 				spellRepertoireSecondaryLine.Unbind();
 				spellRepertoireSecondaryLine.gameObject.SetActive(false);
 
-				if (SpellLineHolder == null)
+				if (spellRepertoireLinesTable.parent.GetChild(0).GetComponent<VerticalLayoutGroup>() == null)
                 {
-					SpellLineHolder = new GameObject();
-					VerticalLayoutGroup vertGroup = SpellLineHolder.AddComponent<VerticalLayoutGroup>();
+					GameObject spellLineHolder = new GameObject();
+					VerticalLayoutGroup vertGroup = spellLineHolder.AddComponent<VerticalLayoutGroup>();
 					vertGroup.spacing = 10f;
-					SpellLineHolder.transform.SetParent(spellRepertoireLinesTable.parent);
-					SpellLineHolder.transform.SetAsFirstSibling();
-					spellRepertoireLinesTable.SetParent(SpellLineHolder.transform);
-                }
+					spellLineHolder.transform.SetParent(spellRepertoireLinesTable.parent);
+					spellLineHolder.transform.SetAsFirstSibling();
+					spellRepertoireLinesTable.SetParent(spellLineHolder.transform);
+				}
 
 				List<RulesetSpellRepertoire> spellRepertoires = __instance.Caster.RulesetCharacter.SpellRepertoires;
 				int spellLevels = 0;
@@ -48,7 +47,7 @@ namespace SolastaUIUpdates.Patches
 					while (enumerator.MoveNext())
 					{
 						RulesetSpellRepertoire rulesetSpellRepertoire = enumerator.Current;
-						spellLevels += ActiveSpellLevelsForRepetoire(rulesetSpellRepertoire);
+						spellLevels += ActiveSpellLevelsForRepetoire(rulesetSpellRepertoire, actionType);
 					}
 				}
 				
@@ -61,12 +60,11 @@ namespace SolastaUIUpdates.Patches
 				for (int repertoireIndex = 0; repertoireIndex < spellRepertoires.Count; repertoireIndex++)
 				{
 					RulesetSpellRepertoire rulesetSpellRepertoire = spellRepertoires[repertoireIndex];
-					Main.Log("Adding spells for repetoire");
 
 					int startLevel = 0;
 					for (int level = startLevel; level <= rulesetSpellRepertoire.MaxSpellLevelOfSpellCastingLevel; level++)
 					{
-						if (IsLevelActive(rulesetSpellRepertoire, level))
+						if (IsLevelActive(rulesetSpellRepertoire, level, actionType))
 						{
 							spellLevelsOnLine++;
 							if (spellLevelsOnLine >= MAX_LEVELS_PER_LINE)
@@ -100,7 +98,6 @@ namespace SolastaUIUpdates.Patches
             {
                 if (needNewLine)
                 {
-					Main.Log("Getting new spell spell line");
 					RectTransform previousTable = spellRepertoireLinesTable;
 					LayoutRebuilder.ForceRebuildLayoutImmediate(previousTable);
 					__instance.RectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, previousTable.rect.width);
@@ -120,14 +117,12 @@ namespace SolastaUIUpdates.Patches
 				}
 
 				SpellRepertoireLine curLine = SetUpNewLine(indexOfLine, spellRepertoireLinesTable, spellRepertoireLines, __instance);
-				Main.Log("Adding spells from: " + rulesetSpellRepertoire.SpellCastingFeature.Name + " levels " + startLevel + " through " + level);
                 curLine.Bind(caster.RulesetCharacter, rulesetSpellRepertoire, spellRepertoires.Count > 1, spellCastEngaged, slotAdvancementPanel, actionType, cantripOnly, startLevel, level);
                 return spellRepertoireLinesTable;
             }
 
             private static SpellRepertoireLine SetUpNewLine(int index, RectTransform spellRepertoireLinesTable, List<SpellRepertoireLine> spellRepertoireLines, SpellSelectionPanel __instance)
             {
-				Main.Log("Getting new spell group");
 				GameObject newLine;
 				if (spellRepertoireLinesTable.childCount <= index)
                 {
@@ -143,11 +138,36 @@ namespace SolastaUIUpdates.Patches
 				return component;
 			}
 
-			private static bool IsLevelActive(RulesetSpellRepertoire spellRepertoire, int level)
+			private static bool IsLevelActive(RulesetSpellRepertoire spellRepertoire, int level, ActionDefinitions.ActionType actionType)
             {
+				RuleDefinitions.ActivationTime spellActivationTime = RuleDefinitions.ActivationTime.Action;
+				switch (actionType)
+                {
+					case ActionDefinitions.ActionType.Bonus:
+						spellActivationTime = RuleDefinitions.ActivationTime.BonusAction;
+						break;
+					case ActionDefinitions.ActionType.Main:
+						spellActivationTime = RuleDefinitions.ActivationTime.Action;
+						break;
+					case ActionDefinitions.ActionType.Reaction:
+						spellActivationTime = RuleDefinitions.ActivationTime.Reaction;
+						break;
+					case ActionDefinitions.ActionType.NoCost:
+						spellActivationTime = RuleDefinitions.ActivationTime.NoCost;
+						break;
+
+				}
 				if (level == 0)
                 {
-					return spellRepertoire.SpellCastingFeature.SpellListDefinition.HasCantrips;
+					foreach (SpellDefinition cantrip in spellRepertoire.KnownCantrips)
+                    {
+						if (cantrip.ActivationTime == spellActivationTime)
+                        {
+							return true;
+                        }
+
+					}
+					return false;
 				}
 
 				if (spellRepertoire.SpellCastingFeature.SpellReadyness == RuleDefinitions.SpellReadyness.Prepared)
@@ -157,7 +177,7 @@ namespace SolastaUIUpdates.Patches
 						while (enumerator.MoveNext())
 						{
 							SpellDefinition spellDefinition = enumerator.Current;
-							if (spellDefinition.SpellLevel == level)
+							if (spellDefinition.SpellLevel == level && spellDefinition.ActivationTime == spellActivationTime)
 							{
 								return true;
 							}
@@ -178,12 +198,12 @@ namespace SolastaUIUpdates.Patches
 				return false;
 			}
 
-			private static int ActiveSpellLevelsForRepetoire(RulesetSpellRepertoire spellRepertoire)
+			private static int ActiveSpellLevelsForRepetoire(RulesetSpellRepertoire spellRepertoire, ActionDefinitions.ActionType actionType)
             {
 				int activeSpellLevels = 0;
 				for (int level = 0; level < spellRepertoire.MaxSpellLevelOfSpellCastingLevel; level++)
 				{
-					if (IsLevelActive(spellRepertoire, level))
+					if (IsLevelActive(spellRepertoire, level, actionType))
 					{
 						activeSpellLevels++;
 					}
