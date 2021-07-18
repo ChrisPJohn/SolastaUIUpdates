@@ -34,7 +34,7 @@ namespace SolastaUIUpdates.Patches
                 {
 					GameObject spellLineHolder = new GameObject();
 					VerticalLayoutGroup vertGroup = spellLineHolder.AddComponent<VerticalLayoutGroup>();
-					vertGroup.spacing = 10f;
+					vertGroup.spacing = 30f;
 					spellLineHolder.transform.SetParent(spellRepertoireLinesTable.parent);
 					spellLineHolder.transform.SetAsFirstSibling();
 					spellRepertoireLinesTable.SetParent(spellLineHolder.transform);
@@ -108,7 +108,6 @@ namespace SolastaUIUpdates.Patches
 						spellRepertoireLinesTable = GameObject.Instantiate(spellRepertoireLinesTable);
 						// clear it of children
 						spellRepertoireLinesTable.DetachChildren();
-						// set position to previous table position + previous height + 10
 						spellRepertoireLinesTable.SetParent(previousTable.parent.transform, true);
 						spellRepertoireLinesTable.localScale = previousTable.localScale;
 						spellRepertoireLinesTable.transform.SetAsFirstSibling();
