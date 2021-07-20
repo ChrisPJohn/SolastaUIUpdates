@@ -9,7 +9,6 @@ namespace SolastaUIUpdates.Patches
 {
     class SpellSelectionPanelPatcher
     {
-		private static readonly int MAX_LEVELS_PER_LINE = 5;
 		private static List<RectTransform> spellLineTables = new List<RectTransform>();
 
 		[HarmonyPatch(typeof(SpellSelectionPanel), "Bind")]
@@ -34,7 +33,7 @@ namespace SolastaUIUpdates.Patches
                 {
 					GameObject spellLineHolder = new GameObject();
 					VerticalLayoutGroup vertGroup = spellLineHolder.AddComponent<VerticalLayoutGroup>();
-					vertGroup.spacing = 30f;
+					vertGroup.spacing = Main.Settings.SpellPanelGapBetweenLines;
 					spellLineHolder.transform.SetParent(spellRepertoireLinesTable.parent);
 					spellLineHolder.transform.SetAsFirstSibling();
 					spellRepertoireLinesTable.SetParent(spellLineHolder.transform);
@@ -67,7 +66,7 @@ namespace SolastaUIUpdates.Patches
 						if (IsLevelActive(rulesetSpellRepertoire, level, actionType))
 						{
 							spellLevelsOnLine++;
-							if (spellLevelsOnLine >= MAX_LEVELS_PER_LINE)
+							if (spellLevelsOnLine >= Main.Settings.MaxSpellLevelsPerLine)
                             {
 								curTable = AddActiveSpellsToLine(__instance, caster, spellCastEngaged, actionType, cantripOnly, spellRepertoireLines, curTable, slotAdvancementPanel, spellRepertoires, needNewLine, lineIndex, indexOfLine, rulesetSpellRepertoire, startLevel, level);
                                 startLevel = level + 1;

@@ -4,6 +4,7 @@
 	"Author": "ChrisJohnDigital",
 	"Version": "0.0.6",
 	"ManagerVersion": "0.23.4",
+	"Requirements": [ "SolastaModApi" ],
 	"AssemblyName": "SolastaUIUpdates.dll",
 	"EntryMethod": "SolastaUIUpdates.Main.Load",
 	"Repository": "https://raw.githubusercontent.com/ChrisPJohn/SolastaUIUpdates/main/SolastaUIUpdates/Repository.json",

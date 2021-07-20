@@ -45,6 +45,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Reference Include="SolastaModApi">
+			<HintPath>$([System.IO.Path]::Combine($(SolastaInstallDir), 'Mods\SolastaModApi\SolastaModApi.dll'))</HintPath>
+			<Private>false</Private>
+		</Reference>
 		<Reference Include="Unity.Addressables">
 			<HintPath>$([System.IO.Path]::Combine($(SolastaInstallDir), 'Solasta_Data\Managed\Unity.Addressables.dll'))</HintPath>
 			<Private>false</Private>
@@ -405,5 +409,9 @@
 		<None Update="Repository.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Viewers\" />
 	</ItemGroup>
 </Project>
