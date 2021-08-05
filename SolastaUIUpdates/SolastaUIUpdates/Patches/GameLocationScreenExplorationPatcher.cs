@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using UnityEngine;
 
 namespace SolastaUIUpdates.Patches
 {
@@ -32,6 +31,20 @@ namespace SolastaUIUpdates.Patches
                                 ___characterControlPanelExploration.Bind(gameLocationSelectionService.SelectedCharacters[0], __instance.ActionTooltipDock);
                                 ___characterControlPanelExploration.Show();
                             }
+                        }
+                        __result = true;
+                        return false;
+
+                    case Settings.CTRL_L:
+                        var guiConsoleScreen = Gui.GuiService.GetScreen<GuiConsoleScreen>();
+
+                        if (___timeAndNavigationPanel.Visible)
+                        {
+                            guiConsoleScreen.Hide();
+                        }
+                        else
+                        {
+                            guiConsoleScreen.Show();
                         }
                         __result = true;
                         return false;

@@ -11,6 +11,7 @@ namespace SolastaUIUpdates.Patches
             internal static void Postfix()
             {
                 ServiceRepository.GetService<IInputService>().RegisterCommand(Settings.CTRL_C, (int)KeyCode.C, (int)KeyCode.LeftControl, -1, -1, -1, -1);
+                ServiceRepository.GetService<IInputService>().RegisterCommand(Settings.CTRL_L, (int)KeyCode.L, (int)KeyCode.LeftControl, -1, -1, -1, -1);
                 ServiceRepository.GetService<IInputService>().RegisterCommand(Settings.CTRL_M, (int)KeyCode.M, (int)KeyCode.LeftControl, -1, -1, -1, -1);
                 ServiceRepository.GetService<IInputService>().RegisterCommand(Settings.CTRL_P, (int)KeyCode.P, (int)KeyCode.LeftControl, -1, -1, -1, -1);
             }
