@@ -38,7 +38,7 @@ namespace SolastaUIUpdates.Patches
                     case Settings.CTRL_L:
                         var guiConsoleScreen = Gui.GuiService.GetScreen<GuiConsoleScreen>();
 
-                        if (___timeAndNavigationPanel.Visible)
+                        if (guiConsoleScreen.Visible)
                         {
                             guiConsoleScreen.Hide();
                         }
