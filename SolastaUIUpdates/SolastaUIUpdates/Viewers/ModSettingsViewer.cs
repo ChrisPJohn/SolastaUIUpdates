@@ -21,7 +21,7 @@ namespace SolastaUIUpdates.Viewers
             }
 
             float floatValue = Main.Settings.SpellPanelGapBetweenLines;
-            if (UI.Slider("Gap between spell lines", ref floatValue, 30f, 50f, 30f, 0, "", UI.AutoWidth()))
+            if (UI.Slider("Gap between spell lines", ref floatValue, 0f, 200f, 50f, 0, "", UI.AutoWidth()))
             {
                 Main.Settings.SpellPanelGapBetweenLines = floatValue;
             }
